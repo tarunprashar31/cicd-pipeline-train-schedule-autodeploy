@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE_NAME = "tarunprashar31/train-schedule"
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub-credentials')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Running build automation'
+                sh './gradlew build --no-daemon'
+                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
+            }
+        }
+        stage('Build Docker Image') {
+            when {
+                branch 'master'
+            }
+            steps {
+			sh 'docker build -t $DOCKER_IMAGE_NAME:latest .'
+            }
+        }
+		
+		stage('Login to Docker Hub') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+		
+		
+        stage('Push Docker Image to Docker Hub') {
+            when {
+                branch 'master'
+            }
+            steps {
+					sh 'docker push $DOCKER_IMAGE_NAME:latest'
+            }
+        }
+
+    }
+	post {
+		always {
+			sh 'docker logout'
+		}
+	}
+}
