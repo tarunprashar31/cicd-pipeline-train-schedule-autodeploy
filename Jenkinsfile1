@@ -37,6 +37,20 @@ pipeline {
 					sh 'sudo docker push $DOCKER_IMAGE_NAME:latest'
             }
         }
+	
+	stage('DeployToProduction') {
+            when {
+                branch 'master'
+            }
+            steps {
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'train-schedule-kube.yml',
+                    enableConfigSubstitution: true
+                )
+            }
+        }
+	
 
     }
 	post {
