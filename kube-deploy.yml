@@ -8,9 +8,9 @@ spec:
     app: train-schedule
   ports:
   - protocol: TCP
-    port: 3000
-	targetPort: 3000
-    nodePort: 3001
+    port: 30000
+    targetPort: 30000
+    nodePort: 30001
 
 ---
 
