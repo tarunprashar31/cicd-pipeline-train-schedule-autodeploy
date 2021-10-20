@@ -32,4 +32,4 @@ spec:
     spec:
       containers:
       - name: train-schedule
-        image: $DOCKER_IMAGE_NAME:latest
+        image: tarunprashar31/train-schedule:latest
